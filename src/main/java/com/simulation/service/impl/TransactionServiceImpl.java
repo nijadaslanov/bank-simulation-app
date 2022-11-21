@@ -3,6 +3,7 @@ package com.simulation.service.impl;
 import com.simulation.enums.AccountType;
 import com.simulation.exception.AccountOwnershipException;
 import com.simulation.exception.BadRequestException;
+import com.simulation.exception.BalanceNotSufficientException;
 import com.simulation.model.Account;
 import com.simulation.model.Transaction;
 import com.simulation.repository.AccountRepository;
@@ -28,22 +29,50 @@ public class TransactionServiceImpl implements TransactionService {
 
         validateAccount(sender, receiver);
         checkAccountOwnerShip(sender, receiver);
+        executeBalanceAndUpdateIfRequired(amount, sender, receiver);
+
+
 
         return null;
+    }
+
+    private void executeBalanceAndUpdateIfRequired(BigDecimal amount, Account sender, Account receiver) {
+
+        if (checkSenderBalance(sender, amount)) {
+            //make transaction
+            sender.setBalance(sender.getBalance().subtract(amount));
+            receiver.setBalance(receiver.getBalance().add(amount));
+        } else {
+            // not enough balance
+            throw new BalanceNotSufficientException("Your balance is not enough for this transfer");
+        }
+
+    }
+
+    private boolean checkSenderBalance(Account sender, BigDecimal amount) {
+
+        // verify that sender has enough balance
+
+        return sender.getBalance().subtract(amount).compareTo(BigDecimal.ZERO) >= 0;
+
+
     }
 
     private void checkAccountOwnerShip(Account sender, Account receiver) {
 
         /*
-        - if one of the account is saving ,
-          and user if of sender or receiver is not the same,
-          throw AccountOwnershipException
+          - write an if statement that checks if one of the account is saving,
+            and user if of sender or receiver is not the same,
+            throw AccountOwnershipException
+          - if one account is saving and ids not match throw exception
          */
 
         if ((sender.getAccountType().equals(AccountType.SAVING)
                 || receiver.getAccountType().equals(AccountType.SAVING))
                 && !sender.getUserId().equals(receiver.getUserId())) {
-            throw new AccountOwnershipException("If one of the account is saving, userId must be same");
+            throw new AccountOwnershipException("One of the accounts is Saving." +
+                    " Transactions between savings and checking accounts are allowed between same user accounts only. " +
+                    " User id's don't match ");
         }
 
 
@@ -53,7 +82,7 @@ public class TransactionServiceImpl implements TransactionService {
 
        /*
        -if any of the accounts is null
-       -if account ids are the same(same account)
+       -if account id_s are the same(same account)
        -if account exist in the database(repository)
         */
 
@@ -79,6 +108,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> findAllTransaction() {
+
 
         return null;
 
