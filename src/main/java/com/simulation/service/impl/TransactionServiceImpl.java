@@ -1,5 +1,7 @@
 package com.simulation.service.impl;
 
+import com.simulation.enums.AccountType;
+import com.simulation.exception.AccountOwnershipException;
 import com.simulation.exception.BadRequestException;
 import com.simulation.model.Account;
 import com.simulation.model.Transaction;
@@ -25,9 +27,26 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date creationDate, String message) {
 
         validateAccount(sender, receiver);
-
+        checkAccountOwnerShip(sender, receiver);
 
         return null;
+    }
+
+    private void checkAccountOwnerShip(Account sender, Account receiver) {
+
+        /*
+        - if one of the account is saving ,
+          and user if of sender or receiver is not the same,
+          throw AccountOwnershipException
+         */
+
+        if ((sender.getAccountType().equals(AccountType.SAVING)
+                || receiver.getAccountType().equals(AccountType.SAVING))
+                && !sender.getUserId().equals(receiver.getUserId())) {
+            throw new AccountOwnershipException("If one of the account is saving, userId must be same");
+        }
+
+
     }
 
     private void validateAccount(Account sender, Account receiver) {
@@ -60,6 +79,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<Transaction> findAllTransaction() {
+
         return null;
 
     }
