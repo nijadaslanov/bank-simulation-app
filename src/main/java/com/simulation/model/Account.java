@@ -20,8 +20,4 @@ public class Account {
     private Long userId;
 
 
-
-
-
-
 }
