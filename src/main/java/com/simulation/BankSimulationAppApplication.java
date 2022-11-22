@@ -32,7 +32,7 @@ public class BankSimulationAppApplication {
         Account sender = accountService.createNewAccount(BigDecimal.valueOf(70000), new Date(), AccountType.CHECKING, 123L);
 
         Account receiver = accountService.createNewAccount(BigDecimal.valueOf(5000), new Date(), AccountType.SAVING, 145L);
-        // receiver=null;
+
 
 //        accountService.listAllAccount().forEach(System.out::println);
 //
@@ -43,6 +43,6 @@ public class BankSimulationAppApplication {
 //
 //
 //
-//    }
     }
+
 }
