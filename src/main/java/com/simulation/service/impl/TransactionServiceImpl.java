@@ -4,11 +4,13 @@ import com.simulation.enums.AccountType;
 import com.simulation.exception.AccountOwnershipException;
 import com.simulation.exception.BadRequestException;
 import com.simulation.exception.BalanceNotSufficientException;
+import com.simulation.exception.UnderConstructionException;
 import com.simulation.model.Account;
 import com.simulation.model.Transaction;
 import com.simulation.repository.AccountRepository;
 import com.simulation.repository.TransactionRepository;
 import com.simulation.service.TransactionService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -18,6 +20,9 @@ import java.util.UUID;
 
 @Component
 public class TransactionServiceImpl implements TransactionService {
+
+    @Value("${under_construction}")
+    private boolean underConstruction;
 
     AccountRepository accountRepository;
     TransactionRepository transactionRepository;
@@ -30,19 +35,22 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction makeTransfer(Account sender, Account receiver, BigDecimal amount, Date creationDate, String message) {
 
-        validateAccount(sender, receiver);
-        checkAccountOwnerShip(sender, receiver);
-        executeBalanceAndUpdateIfRequired(amount, sender, receiver);
+        if (!underConstruction) {
+            validateAccount(sender, receiver);
+            checkAccountOwnerShip(sender, receiver);
+            executeBalanceAndUpdateIfRequired(amount, sender, receiver);
 
          /*
          after all validations completed, and money is transferred, we need to create Transaction object
          save and return it
          */
+            Transaction transaction = Transaction.builder().amount(amount).sender(sender.getId()).receiver(receiver.getId())
+                    .creationDate(creationDate).message(message).build();
 
-        Transaction transaction = Transaction.builder().amount(amount).sender(sender.getId()).receiver(receiver.getId())
-                .creationDate(creationDate).message(message).build();
-
-        return transactionRepository.save(transaction);
+            return transactionRepository.save(transaction);
+        }else {
+            throw new UnderConstructionException("App is under construction");
+        }
     }
 
     private void executeBalanceAndUpdateIfRequired(BigDecimal amount, Account sender, Account receiver) {
