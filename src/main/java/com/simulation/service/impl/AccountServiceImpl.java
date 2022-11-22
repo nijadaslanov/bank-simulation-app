@@ -1,5 +1,6 @@
 package com.simulation.service.impl;
 
+import com.simulation.enums.AccountStatus;
 import com.simulation.enums.AccountType;
 import com.simulation.model.Account;
 import com.simulation.repository.AccountRepository;
@@ -28,7 +29,7 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = Account.builder().id(UUID.randomUUID())
                 .userId(userId).accountType(accountType).balance(balance)
-                .creationDate(creationDate).build();
+                .creationDate(creationDate).accountStatus(AccountStatus.ACTIVE).build();
         return accountRepository.save(account);
 
 

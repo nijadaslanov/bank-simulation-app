@@ -1,5 +1,6 @@
 package com.simulation.model;
 
+import com.simulation.enums.AccountStatus;
 import com.simulation.enums.AccountType;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class Account {
     private AccountType accountType;
     private Date creationDate;
     private Long userId;
+    private AccountStatus accountStatus;
 
 
 }
