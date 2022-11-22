@@ -1,5 +1,7 @@
 package com.simulation.controller;
 
+import com.simulation.enums.AccountType;
+import com.simulation.model.Account;
 import com.simulation.service.impl.AccountServiceImpl;
 
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,15 @@ public class AccountController {
         model.addAttribute("accountList", accountService.listAllAccount());
 
         return "account/index";
+    }
+
+    @GetMapping("/create-form")
+    public String getCreateForm(Model model) {
+
+        model.addAttribute("account", Account.builder().build());
+        model.addAttribute("accountTypes", AccountType.values());// get enum values
+
+        return "account/create-account";
     }
 
 
