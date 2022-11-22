@@ -4,7 +4,7 @@ import com.simulation.enums.AccountType;
 import com.simulation.model.Account;
 import com.simulation.repository.AccountRepository;
 import com.simulation.service.AccountService;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;

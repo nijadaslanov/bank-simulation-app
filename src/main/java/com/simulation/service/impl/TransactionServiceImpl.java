@@ -7,6 +7,7 @@ import com.simulation.exception.BalanceNotSufficientException;
 import com.simulation.model.Account;
 import com.simulation.model.Transaction;
 import com.simulation.repository.AccountRepository;
+import com.simulation.repository.TransactionRepository;
 import com.simulation.service.TransactionService;
 import org.springframework.stereotype.Component;
 
@@ -19,9 +20,11 @@ import java.util.UUID;
 public class TransactionServiceImpl implements TransactionService {
 
     AccountRepository accountRepository;
+    TransactionRepository transactionRepository;
 
-    public TransactionServiceImpl(AccountRepository accountRepository) {
+    public TransactionServiceImpl(AccountRepository accountRepository, TransactionRepository transactionRepository) {
         this.accountRepository = accountRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -30,15 +33,16 @@ public class TransactionServiceImpl implements TransactionService {
         validateAccount(sender, receiver);
         checkAccountOwnerShip(sender, receiver);
         executeBalanceAndUpdateIfRequired(amount, sender, receiver);
-        /*
-        after all validations completed, and money is transferred, we need to create Transaction object,
-        save and return it
+
+         /*
+         after all validations completed, and money is transferred, we need to create Transaction object
+         save and return it
          */
 
+        Transaction transaction = Transaction.builder().amount(amount).sender(sender.getId()).receiver(receiver.getId())
+                .creationDate(creationDate).message(message).build();
 
-
-
-        return null;
+        return transactionRepository.save(transaction);
     }
 
     private void executeBalanceAndUpdateIfRequired(BigDecimal amount, Account sender, Account receiver) {
@@ -107,6 +111,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private Account findAccountById(UUID id) {
+
         return accountRepository.findById(id);
 
     }
