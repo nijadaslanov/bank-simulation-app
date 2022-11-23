@@ -7,6 +7,11 @@ import com.simulation.service.impl.AccountServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.Date;
 
 @Controller
 public class AccountController {
@@ -32,6 +37,14 @@ public class AccountController {
         model.addAttribute("accountTypes", AccountType.values());// get enum values
 
         return "account/create-account";
+    }
+
+    @PostMapping("/create")
+    public String createAccount(@ModelAttribute("account") Account account) {
+
+        accountService.createNewAccount(account.getBalance(), new Date(), account.getAccountType(), account.getUserId());
+
+        return "redirect:/index";
     }
 
 
