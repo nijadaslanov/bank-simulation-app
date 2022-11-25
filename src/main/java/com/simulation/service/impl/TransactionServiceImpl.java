@@ -131,4 +131,16 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepository.findAll();
 
     }
+
+    @Override
+    public List<Transaction> findTransactionsList() {
+
+        //we want to list latest 10 transactions
+
+        return transactionRepository.lastTransactions();
+
+
+
+
+    }
 }

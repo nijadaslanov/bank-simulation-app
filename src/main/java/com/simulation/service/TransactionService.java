@@ -14,6 +14,7 @@ public interface TransactionService {
     List<Transaction> findAllTransaction();
 
 
+    List<Transaction>findTransactionsList();
 }
 
 
