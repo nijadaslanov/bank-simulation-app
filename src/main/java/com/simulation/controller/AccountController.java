@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Controller
 public class AccountController {
@@ -47,5 +48,11 @@ public class AccountController {
         return "redirect:/index";
     }
 
+    @GetMapping("/delete/{id}")
+    public String getDeleteAccount(@PathVariable("id") UUID id) {
+
+        accountService.deleteAccount(id);
+        return "redirect:/index";
+    }
 
 }
